@@ -6,10 +6,16 @@ import KPICard from "./components/kpi-card";
 import "../node_modules/bulma/css/bulma.css";
 import ChartCard from "./components/chart-card";
 import Charts from "fusioncharts/fusioncharts.charts";
-import FusionCharts from "fusioncharts";
-import ReactFC from "react-fusioncharts";
 
-ReactFC.fcRoot(FusionCharts, Charts);
+import FusionCharts from "fusioncharts";
+import FusionTheme from "fusioncharts/themes/fusioncharts.theme.fusion";
+import OceanTheme from "fusioncharts/themes/fusioncharts.theme.ocean";
+
+import ReactFC from "react-fusioncharts";
+import ChartConfigHelper from "./components/chart-config-helper";
+import BudgetMathHelper from "./components/budget-math-helper";
+
+ReactFC.fcRoot(FusionCharts, Charts, FusionTheme, OceanTheme);
 
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${config.spreadsheetId}/values:batchGet?ranges=Budget&majorDimension=ROWS&key=${config.apiKey}`;
 
@@ -17,12 +23,14 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      income: 0,
-      expenses: 0,
-      gross: 0,
+      totalIncome: 0,
+      totalExpenses: 0,
+      totalGross: 0,
 
       items: [],
-      chartData: null
+      chartData: null,
+      expensePieChartData: null,
+      expenseBarChartData: null
     };
   }
 
@@ -41,121 +49,61 @@ class App extends Component {
           rows.push(rowObject);
         }
 
-        this.setState({ items: rows }, () => this.getData());
+        this.setState({ items: rows }, () => this.updateData());
       });
   }
 
-  getData = () => {
+  updateData = () => {
     // Reference current items in state
     const records = this.state.items;
 
-    // Variables to contain new state data
-    let newExpenseItems = [];
-    let newIncomeItems = [];
-    let newItems = [];
-    let newIncome = 0;
-    let newExpenses = 0;
+    let budgetData = BudgetMathHelper.getTotalsForIncomeExpenseAndGross(
+      records
+    );
 
-    for (let i = 0; i < records.length; i++) {
-      let typeString = records[i]["type"];
-
-      // Remove any funky currency-related parts from number
-      let tcCurrencyString = records[i]["totalcost"];
-      let tcNumber = Number(tcCurrencyString.replace(/[^0-9.-]+/g, ""));
-
-      // Add to income/expense total based on type
-      if (typeString.includes("income")) {
-        newIncome += tcNumber;
-        newIncomeItems.push({
-          description: records[i].description,
-          value: tcNumber
-        });
-      } else {
-        newExpenses += tcNumber;
-        newExpenseItems.push({
-          label: records[i].description,
-          value: tcNumber
-        });
-      }
-      // console.log(newIncome);
-      // descriptions.push(records[i].description);
-      // values.push(records[i].number);
-      // newItems.push({ description: records[i].description, number: records[i].number });
-    }
-
-    console.log(newExpenseItems);
-    // Calculate gross...
-    let newGross = newIncome - newExpenses;
-
-    // ... then define formatter to format the amounts back to rand currency
-    var formatter = new Intl.NumberFormat("en-ZA", {
-      style: "currency",
-      currency: "ZAR"
-    });
-
-    newIncome = formatter.format(newIncome);
-    newExpenses = formatter.format(newExpenses);
-    newGross = formatter.format(newGross);
+    let itemArrays = BudgetMathHelper.getIncomeAndExpenseDataArrays(records);
+    let expenseChartData = BudgetMathHelper.getKeyValueArrayFromMap(
+      BudgetMathHelper.getCategoryValueMapFromData(itemArrays.expenseItems)
+    );
 
     // Update state with new amount variables
     this.setState({
-      income: newIncome,
-      expenses: newExpenses,
-      gross: newGross
+      totalIncome: budgetData.totalIncome,
+      totalExpenses: budgetData.totalExpenses,
+      totalGross: budgetData.totalGross,
+      expensePieChartConfig: ChartConfigHelper.doughnut2dConfig(
+        expenseChartData
+      ),
+      expenseBarChartData: ChartConfigHelper.bar2dConfig(expenseChartData)
     });
-
-    const chartConfig = {
-      type: "pie3d",
-      width: "100%",
-      dataFormat: "json",
-      dataSource: {
-        chart: {
-          xAxisName: "Description",
-          yAxisName: "Value",
-          numberPrefix: "R",
-          labelDisplay: "rotate",
-          slantLabel: "1",
-          showLabels: "1",
-          chartLeftMargin: "0",
-          chartRightMargin: "0",
-          showBorder: "0",
-          bgColor: "#ffffff",
-          plotToolText: "<b>$label: $dataValue</b>"
-        },
-        data: newExpenseItems
-      }
-    };
-
-    this.setState({ items: newItems });
-    this.setState({ chartData: chartConfig });
   };
 
   render() {
     return (
-      <div className="app has-background-light">
+      <div className="app material-design-dark">
         <Navbar />
         <div className="container is-fullhd">
-          <section className="section is-bottom-paddingless has-paddingtop-size-1">
+          <section className="section is-bottom-paddingless">
             <div className="columns">
-              <div className="column">
+              <div className="column material-design-dark-card">
                 <KPICard
                   id="test1"
                   cardtitle="Income"
-                  value={this.state.income}
+                  value={this.state.totalIncome}
                 />
               </div>
               <div className="column">
                 <KPICard
                   id="test2"
                   cardtitle="Expenses"
-                  value={this.state.expenses}
+                  value={this.state.totalExpenses}
                 />
               </div>
               <div className="column">
                 <KPICard
                   id="test3"
                   cardtitle="Gross"
-                  value={this.state.gross}
+                  value={this.state.totalGross}
                 />
               </div>
             </div>
@@ -166,14 +114,14 @@ class App extends Component {
               <div className="column is-half-tablet is-one-third-desktop is-half-fullhd">
                 <ChartCard
                   chartTitle="All Expenses"
-                  chartConfig={this.state.chartData}
+                  chartConfig={this.state.expensePieChartConfig}
                 />
               </div>
 
               <div className="column is-half-tablet is-one-third-desktop is-half-fullhd">
                 <ChartCard
                   chartTitle="All Expenses"
-                  chartConfig={this.state.chartData}
+                  chartConfig={this.state.expenseBarChartData}
                 />
               </div>
             </div>

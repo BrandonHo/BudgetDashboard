@@ -4,13 +4,13 @@ import "../../node_modules/bulma/css/bulma.css";
 const NavBar = () => {
   return (
     <nav
-      className="navbar has-shadow is-spaced has-background-dark"
+      className="navbar is-spaced has-background-dark"
       role="navigation"
       aria-label="main navigation"
     >
       <div className="navbar-brand">
         <div className="navbar-item is-size-4 has-text-weight-semibold has-text-light">
-          Data Dashboard
+          Budget Dashboard by Brandon Ho
         </div>
       </div>
 
