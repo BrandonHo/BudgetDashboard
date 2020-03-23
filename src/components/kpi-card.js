@@ -3,7 +3,7 @@ import "../../node_modules/bulma/css/bulma.css";
 
 const KPICard = props => {
   return (
-    <div className="card material-design-dark-card">
+    <div className="card has-background-grey-lighter">
       <header className="card-header material-design-dark-card">
         <div className="card-header-title is-mobile is-desktop" id="card-title">
           {props.cardtitle}

@@ -1,29 +1,53 @@
 import React from "react";
 import "../../node_modules/bulma/css/bulma.css";
+import "../App.css";
+import IconButton from "../../node_modules/@material-ui/core/IconButton";
+import GithubIcon from "../../node_modules/@material-ui/icons/GitHub";
+import LinkedinIcon from "../../node_modules/@material-ui/icons/LinkedIn";
+import { makeStyles } from "../../node_modules/@material-ui/core/styles";
+
+const customIconButtonStyle = makeStyles(() => ({
+  customHoverFocus: {
+    "&:hover, &.Mui-focusVisible": { backgroundColor: "white" }
+  }
+}));
 
 const NavBar = () => {
+  const iconButtonStyle = customIconButtonStyle();
+
   return (
     <nav
-      className="navbar is-spaced has-background-dark"
+      className="navbar is-spaced has-background-black-ter has-text-light"
       role="navigation"
       aria-label="main navigation"
     >
       <div className="navbar-brand">
-        <div className="navbar-item is-size-4 has-text-weight-semibold has-text-light">
-          Budget Dashboard by Brandon Ho
+        <div className="navbar-item is-size-5 has-text-weight-semibold has-text-light">
+          Budget Dashboard
+        </div>
+        <div className="navbar-item is-size-5 has-text-grey is-left-paddingless">
+          by Brandon Ho
         </div>
       </div>
 
-      {/* <div className="navbar-end" aria-label="menu" aria-expanded="false">
-        <a
-          id="btn-Sheet1"
-          className="navbar-item is-active has-text-link"
-          href="#"
-          onClick={this.updateDashboard}
+      <div className="navbar-end" aria-label="menu" aria-expanded="false">
+        <IconButton
+          className={iconButtonStyle.customHoverFocus}
+          href="https://github.com/BrandonHo"
+          size="medium"
+          color="inherit"
         >
-          Sheet1
-        </a>
-      </div> */}
+          <GithubIcon />
+        </IconButton>
+        <IconButton
+          className={iconButtonStyle.customHoverFocus}
+          href="https://www.linkedin.com/in/brandon-ho-za/"
+          size="medium"
+          color="inherit"
+        >
+          <LinkedinIcon />
+        </IconButton>
+      </div>
     </nav>
   );
 };

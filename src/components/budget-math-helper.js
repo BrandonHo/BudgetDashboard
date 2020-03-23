@@ -8,16 +8,14 @@ function getCategoryValueMapFromData(budgetData) {
   let categoryValueMap = new Map();
 
   for (let i = 0; i < budgetData.length; i++) {
-    // Remove any funky currency-related parts from number
-    let tcNumber = formatCurrencyString(budgetData[i].totalcost);
-    let categoryString = budgetData[i].category;
-
     // Add category to appropriate map depending on type
+    let categoryString = budgetData[i].category;
     if (!categoryValueMap.has(categoryString))
       categoryValueMap.set(categoryString, 0);
     categoryValueMap.set(
       categoryString,
-      categoryValueMap.get(categoryString) + tcNumber
+      categoryValueMap.get(categoryString) +
+        formatCurrencyString(budgetData[i].totalcost)
     );
   }
 
@@ -77,6 +75,35 @@ function getTotalsForIncomeExpenseAndGross(budgetData) {
   };
 }
 
+function getCumulativeTotalPerDateArray(budgetData) {
+  // Calculate and map totals per day
+  let totalPerDateMap = new Map();
+  for (let i = 0; i < budgetData.length; i++) {
+    if (!totalPerDateMap.has(budgetData[i].date))
+      totalPerDateMap.set(budgetData[i].date, 0);
+    totalPerDateMap.set(
+      budgetData[i].date,
+      totalPerDateMap.get(budgetData[i].date) +
+        formatCurrencyString(budgetData[i].totalcost)
+    );
+  }
+
+  // Calculate/add cumulative totals by iterating through map entries (new map with sorted entries)
+  let cumulativeTotal = 0;
+  let totalPerDateArray = [];
+  for (const [mapKey, mapValue] of new Map(
+    [...totalPerDateMap.entries()].sort()
+  ).entries()) {
+    cumulativeTotal += mapValue;
+    totalPerDateArray.push({
+      label: mapKey,
+      value: cumulativeTotal
+    });
+  }
+
+  return totalPerDateArray;
+}
+
 function formatCurrencyString(currencyAmountString) {
   return Number(currencyAmountString.replace(/[^0-9.-]+/g, ""));
 }
@@ -85,5 +112,6 @@ export default {
   getCategoryValueMapFromData,
   getKeyValueArrayFromMap,
   getIncomeAndExpenseDataArrays,
-  getTotalsForIncomeExpenseAndGross
+  getTotalsForIncomeExpenseAndGross,
+  getCumulativeTotalPerDateArray
 };

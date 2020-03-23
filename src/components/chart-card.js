@@ -4,12 +4,9 @@ import "../../node_modules/bulma/css/bulma.css";
 
 const ChartCard = props => {
   return (
-    <div className="card is-two-thirds-desktop is-full-tablet is-two-thirds-mobile is-bottom-paddingless has-block-display">
+    <div className="card is-half-fullhd is-half-desktop is-mobile is-bottom-paddingless has-block-display">
       <header className="card-header">
-        <div
-          id="card-chart-title"
-          className="card-header-title is-mobile is-desktop"
-        >
+        <div id="card-chart-title" className="card-header-title">
           {props.chartTitle}
         </div>
       </header>

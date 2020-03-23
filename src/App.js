@@ -27,43 +27,48 @@ class App extends Component {
       totalExpenses: 0,
       totalGross: 0,
 
-      items: [],
+      records: [],
       chartData: null,
       expensePieChartData: null,
-      expenseBarChartData: null
+      expenseBarChartData: null,
+      expenseAreaChartData: null
     };
   }
 
   componentDidMount() {
+    // Process google sheets callback for data
     fetch(url)
       .then(response => response.json())
       .then(data => {
         let batchRowValues = data.valueRanges[0].values;
         const rows = [];
 
+        // Get each record from the spreadsheet (note first row/headers excluded)
         for (let i = 1; i < batchRowValues.length; i++) {
           let rowObject = {};
-          for (let j = 0; j < batchRowValues[i].length; j++) {
+          for (let j = 0; j < batchRowValues[i].length; j++)
             rowObject[batchRowValues[0][j]] = batchRowValues[i][j];
-          }
           rows.push(rowObject);
         }
 
-        this.setState({ items: rows }, () => this.updateData());
+        // Set records in state, then process for UI purposes
+        this.setState({ records: rows }, () => this.processDataForUI());
       });
   }
 
-  updateData = () => {
-    // Reference current items in state
-    const records = this.state.items;
+  processDataForUI = () => {
+    // Reference current records in state
+    const records = this.state.records;
 
     let budgetData = BudgetMathHelper.getTotalsForIncomeExpenseAndGross(
       records
     );
-
     let itemArrays = BudgetMathHelper.getIncomeAndExpenseDataArrays(records);
     let expenseChartData = BudgetMathHelper.getKeyValueArrayFromMap(
       BudgetMathHelper.getCategoryValueMapFromData(itemArrays.expenseItems)
+    );
+    let cumulativeExpenseChartData = BudgetMathHelper.getCumulativeTotalPerDateArray(
+      itemArrays.expenseItems
     );
 
     // Update state with new amount variables
@@ -74,13 +79,16 @@ class App extends Component {
       expensePieChartConfig: ChartConfigHelper.doughnut2dConfig(
         expenseChartData
       ),
-      expenseBarChartData: ChartConfigHelper.bar2dConfig(expenseChartData)
+      expenseBarChartData: ChartConfigHelper.bar2dConfig(expenseChartData),
+      expenseAreaChartData: ChartConfigHelper.area2dConfig(
+        cumulativeExpenseChartData
+      )
     });
   };
 
   render() {
     return (
-      <div className="app material-design-dark">
+      <div className="app has-background-grey-dark">
         <Navbar />
         <div className="container is-fullhd">
           <section className="section is-bottom-paddingless">
@@ -111,16 +119,16 @@ class App extends Component {
 
           <section className="section is-bottom-paddingless has-paddingtop-size-1">
             <div className="columns is-multiline">
-              <div className="column is-half-tablet is-one-third-desktop is-half-fullhd">
+              <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
                 <ChartCard
-                  chartTitle="All Expenses"
-                  chartConfig={this.state.expensePieChartConfig}
+                  chartTitle="Cumulative Expenses Over Time"
+                  chartConfig={this.state.expenseAreaChartData}
                 />
               </div>
 
-              <div className="column is-half-tablet is-one-third-desktop is-half-fullhd">
+              <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
                 <ChartCard
-                  chartTitle="All Expenses"
+                  chartTitle="Category Overview of Expenses"
                   chartConfig={this.state.expenseBarChartData}
                 />
               </div>
