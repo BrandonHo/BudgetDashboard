@@ -1,18 +1,18 @@
-import React from "react";
-import "../../node_modules/bulma/css/bulma.css";
-import "../App.css";
-import IconButton from "../../node_modules/@material-ui/core/IconButton";
-import GithubIcon from "../../node_modules/@material-ui/icons/GitHub";
-import LinkedinIcon from "../../node_modules/@material-ui/icons/LinkedIn";
-import { makeStyles } from "../../node_modules/@material-ui/core/styles";
+import React from 'react';
+import '../../node_modules/bulma/css/bulma.css';
+import '../App.css';
+import IconButton from '../../node_modules/@material-ui/core/IconButton';
+import GithubIcon from '../../node_modules/@material-ui/icons/GitHub';
+import LinkedinIcon from '../../node_modules/@material-ui/icons/LinkedIn';
+import { makeStyles } from '../../node_modules/@material-ui/core/styles';
 
 const customIconButtonStyle = makeStyles(() => ({
   customHoverFocus: {
-    "&:hover, &.Mui-focusVisible": { backgroundColor: "white" }
-  }
+    '&:hover, &.Mui-focusVisible': { backgroundColor: 'white' },
+  },
 }));
 
-const NavBar = () => {
+const NavBar = (props) => {
   const iconButtonStyle = customIconButtonStyle();
 
   return (
@@ -28,6 +28,25 @@ const NavBar = () => {
         <div className="navbar-item is-size-5 has-text-grey is-left-paddingless">
           by Brandon Ho
         </div>
+      </div>
+
+      <div className="navbar-end" aria-label="selector" aria-expanded="false">
+        {/* eslint-disable */}
+        <a
+          id="btn-income"
+          className="navbar-item has-text-grey"
+          href="#"
+          onClick={() => props.onClickEvent("yrdy")}
+        >
+          Incomes
+        </a>
+        <a id="btn-expenses" className="navbar-item has-text-grey" href="#">
+          Expenses
+        </a>
+        <a id="btn-gross" className="navbar-item has-text-grey" href="#">
+          Gross
+        </a>
+        {/* eslint-enable */}
       </div>
 
       <div className="navbar-end" aria-label="menu" aria-expanded="false">

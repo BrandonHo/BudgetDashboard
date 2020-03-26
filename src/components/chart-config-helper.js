@@ -1,69 +1,69 @@
 function doughnut2dConfig(chartData) {
   return {
-    type: "doughnut2d",
-    width: "100%",
-    dataFormat: "json",
+    type: 'doughnut2d',
+    width: '100%',
+    dataFormat: 'json',
     dataSource: {
       chart: {
-        numberPrefix: "R",
-        labelDisplay: "rotate",
-        slantLabel: "1",
-        showLabels: "1",
-        chartLeftMargin: "0",
-        chartRightMargin: "0",
-        showBorder: "0",
-        bgColor: "#ffffff",
-        plotToolText: "<b>$label: $dataValue</b>",
-        theme: "fusion"
+        numberPrefix: 'R',
+        labelDisplay: 'rotate',
+        slantLabel: '1',
+        showLabels: '1',
+        chartLeftMargin: '0',
+        chartRightMargin: '0',
+        showBorder: '0',
+        bgColor: '#ffffff',
+        plotToolText: '<b>$label: $dataValue</b>',
+        theme: 'fusion',
       },
-      data: chartData
-    }
+      data: chartData,
+    },
   };
 }
 
 function bar2dConfig(chartData) {
   return {
-    type: "bar2d",
-    width: "100%",
-    dataFormat: "json",
+    type: 'bar2d',
+    width: '100%',
+    dataFormat: 'json',
     dataSource: {
       chart: {
-        numberPrefix: "R",
-        labelDisplay: "rotate",
-        slantLabel: "1",
-        showLabels: "1",
-        chartLeftMargin: "0",
-        chartRightMargin: "0",
-        showBorder: "0",
-        bgColor: "#ffffff",
-        plotToolText: "<b>$label: $dataValue</b>",
-        theme: "fusion"
+        numberPrefix: 'R',
+        labelDisplay: 'rotate',
+        slantLabel: '1',
+        showLabels: '1',
+        chartLeftMargin: '0',
+        chartRightMargin: '0',
+        showBorder: '0',
+        bgColor: '#ffffff',
+        plotToolText: '<b>$label: $dataValue</b>',
+        theme: 'fusion',
       },
-      data: chartData
-    }
+      data: chartData,
+    },
   };
 }
 
 function area2dConfig(chartData) {
   return {
-    type: "area2d",
-    width: "100%",
-    dataFormat: "json",
+    type: 'area2d',
+    width: '100%',
+    dataFormat: 'json',
     dataSource: {
       chart: {
-        numberPrefix: "R",
-        labelDisplay: "Auto",
-        slantLabel: "1",
-        showLabels: "1",
-        chartLeftMargin: "0",
-        chartRightMargin: "0",
-        showBorder: "0",
-        bgColor: "#ffffff",
-        plotToolText: "<b>$label: $dataValue</b>",
-        theme: "fusion"
+        numberPrefix: 'R',
+        labelDisplay: 'Auto',
+        slantLabel: '1',
+        showLabels: '1',
+        chartLeftMargin: '0',
+        chartRightMargin: '0',
+        showBorder: '0',
+        bgColor: '#ffffff',
+        plotToolText: '<b>$label: $dataValue</b>',
+        theme: 'fusion',
       },
-      data: chartData
-    }
+      data: chartData,
+    },
   };
 }
 
