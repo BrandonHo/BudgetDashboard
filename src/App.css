@@ -1,26 +1,39 @@
-/* .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-} */
-
 .app {
-  height: 100%;
+  min-height: 100%;
+  height: auto;
 }
 
-.has-paddingtop-size-1 {
-  padding-top: 2rem;
+.is-spaced {
+  padding: 0.25rem 1rem !important;
+}
+
+.has-fixed-navbar-top-padding {
+  padding-top: 2rem !important;
 }
 
 .is-bottom-paddingless {
   padding-bottom: 0 !important;
 }
 
+.is-top-paddingless {
+  padding-top: 0 !important;
+}
+
 .is-left-paddingless {
   padding-left: 0 !important;
+}
+
+.is-left-padding-size-2 {
+  padding-left: 4rem;
+}
+
+.is-next-section {
+  padding-top: 1.5rem !important;
+}
+
+@media only screen and (max-width: 1024px) {
+
+    .has-fixed-navbar-top-padding {
+      padding-top: 2rem !important;
+    }
 }

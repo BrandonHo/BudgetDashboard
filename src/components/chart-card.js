@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import '../../node_modules/bulma/css/bulma.css';
 
 const ChartCard = ({ chartTitle, chartConfig }) => (
-  <div className="card is-half-fullhd is-half-desktop is-mobile is-bottom-paddingless has-block-display">
+  <div className="card is-half-fullhd is-half-desktop is-mobile is-bottom-paddingless has-block-display has-background-white-ter">
     <header className="card-header">
       <div id="card-chart-title" className="card-header-title">
         {chartTitle}

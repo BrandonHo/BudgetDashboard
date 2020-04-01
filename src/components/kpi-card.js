@@ -4,8 +4,8 @@ import '../../node_modules/bulma/css/bulma.css';
 import BudgetMathHelper from './budget-math-helper';
 
 const KPICard = ({ cardTitle, value }) => (
-  <div className="card has-background-grey-lighter">
-    <header className="card-header material-design-dark-card">
+  <div className="card has-background-white-ter">
+    <header className="card-header">
       <div className="card-header-title is-mobile is-desktop" id="card-title">
         {cardTitle}
       </div>

@@ -5,8 +5,6 @@ import Charts from 'fusioncharts/fusioncharts.charts';
 
 import FusionCharts from 'fusioncharts';
 import ReactFC from 'react-fusioncharts';
-import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion';
-import OceanTheme from 'fusioncharts/themes/fusioncharts.theme.ocean';
 import KPICard from './components/kpi-card';
 
 import ChartCard from './components/chart-card';
@@ -15,7 +13,7 @@ import config from './config';
 import ChartConfigHelper from './components/chart-config-helper';
 import BudgetMathHelper from './components/budget-math-helper';
 
-ReactFC.fcRoot(FusionCharts, Charts, FusionTheme, OceanTheme);
+ReactFC.fcRoot(FusionCharts, Charts);
 
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${config.spreadsheetId}/values:batchGet?ranges=Budget&majorDimension=ROWS&key=${config.apiKey}`;
 
@@ -27,8 +25,11 @@ class App extends Component {
       totalExpenses: 0,
       totalGross: 0,
       records: [],
-      expenseBarChartData: null,
-      expenseAreaChartData: null,
+      incomeCategoryChartData: null,
+      incomeCumulativeChartData: null,
+      expenseCategoryChartData: null,
+      expenseCumulativeChartData: null,
+      // grossCumulativeChartData: null,
     };
   }
 
@@ -54,23 +55,30 @@ class App extends Component {
       });
   }
 
-  testMethod = () => {
-    // console.log(testWord);
+  testMethod = (testWord) => {
+    console.log(testWord);
   };
 
   processDataForUI = () => {
     // Reference current records in state
     const { records } = this.state;
 
+    // Use helper to calculate/format data from records
     const budgetData = BudgetMathHelper.getTotalsForIncomeExpenseAndGross(
       records,
     );
     const itemArrays = BudgetMathHelper.getIncomeAndExpenseDataArrays(records);
-    const expenseChartData = BudgetMathHelper.getKeyValueArrayFromMap(
+    const expenseCategoryData = BudgetMathHelper.getKeyValueArrayFromMap(
       BudgetMathHelper.getCategoryValueMapFromData(itemArrays.expenseItems),
     );
-    const cumulativeExpenseChartData = BudgetMathHelper.getCumulativeTotalPerDateArray(
+    const expenseCumulativeData = BudgetMathHelper.getCumulativeTotalPerDateArray(
       itemArrays.expenseItems,
+    );
+    const incomeCategoryData = BudgetMathHelper.getKeyValueArrayFromMap(
+      BudgetMathHelper.getCategoryValueMapFromData(itemArrays.incomeItems),
+    );
+    const incomeCumulativeData = BudgetMathHelper.getCumulativeTotalPerDateArray(
+      itemArrays.incomeItems,
     );
 
     // Update state with new amount variables
@@ -78,18 +86,23 @@ class App extends Component {
       totalIncome: budgetData.totalIncome,
       totalExpenses: budgetData.totalExpenses,
       totalGross: budgetData.totalGross,
-      expenseBarChartData: ChartConfigHelper.bar2dConfig(expenseChartData),
-      expenseAreaChartData: ChartConfigHelper.area2dConfig(cumulativeExpenseChartData),
+      expenseCategoryChartData: ChartConfigHelper.bar2dConfig(expenseCategoryData),
+      expenseCumulativeChartData: ChartConfigHelper.area2dConfig(expenseCumulativeData),
+      incomeCategoryChartData: ChartConfigHelper.bar2dConfig(incomeCategoryData),
+      incomeCumulativeChartData: ChartConfigHelper.area2dConfig(incomeCumulativeData),
     });
   };
 
   render() {
     const { totalIncome, totalExpenses, totalGross } = this.state;
-    const { expenseAreaChartData, expenseBarChartData } = this.state;
+    const {
+      expenseCumulativeChartData, expenseCategoryChartData,
+      incomeCumulativeChartData, incomeCategoryChartData,
+    } = this.state;
     return (
       <div className="app has-background-grey-dark">
-        <Navbar onClickEvent={this.testMethod} />
-        <div className="container is-fullhd">
+        <Navbar />
+        <div className="container is-fullhd has-fixed-navbar-top-padding">
           <section className="section is-bottom-paddingless">
             <div className="columns">
               <div className="column material-design-dark-card">
@@ -116,19 +129,33 @@ class App extends Component {
             </div>
           </section>
 
-          <section className="section is-bottom-paddingless has-paddingtop-size-1">
+          <section className="section is-next-section is-bottom-paddingless">
             <div className="columns is-multiline">
               <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
                 <ChartCard
                   chartTitle="Cumulative Expenses Over Time"
-                  chartConfig={expenseAreaChartData}
+                  chartConfig={expenseCumulativeChartData}
                 />
               </div>
 
               <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
                 <ChartCard
                   chartTitle="Category Overview of Expenses"
-                  chartConfig={expenseBarChartData}
+                  chartConfig={expenseCategoryChartData}
+                />
+              </div>
+
+              <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
+                <ChartCard
+                  chartTitle="Cumulative Income Over Time"
+                  chartConfig={incomeCumulativeChartData}
+                />
+              </div>
+
+              <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
+                <ChartCard
+                  chartTitle="Category Overview of Income"
+                  chartConfig={incomeCategoryChartData}
                 />
               </div>
             </div>
