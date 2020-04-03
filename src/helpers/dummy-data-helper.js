@@ -1,0 +1,142 @@
+function generateDummyData() {
+  return {
+    valueRanges: [
+      {
+        range: 'Budget!A1:AA1000',
+        majorDimension: 'ROWS',
+        values: [
+          [
+            'description',
+            'type',
+            'category',
+            'date',
+            'totalcost',
+          ],
+          [
+            'Milk',
+            'expense',
+            'Food',
+            '5/3',
+            'R70.00',
+          ],
+          [
+            'Bread',
+            'expense',
+            'Food',
+            '5/3',
+            'R20.00',
+          ],
+          [
+            'Cereal',
+            'expense',
+            'Food',
+            '5/3',
+            'R100.00',
+          ],
+          [
+            'Rent',
+            'expense',
+            'Rent',
+            '5/3',
+            'R8,000.00',
+          ],
+          [
+            'Cheese',
+            'expense',
+            'Food',
+            '5/3',
+            'R100.00',
+          ],
+          [
+            'Salary',
+            'income',
+            'Full-time Job',
+            '1/3',
+            'R15,000.00',
+          ],
+          [
+            'Freelance',
+            'income',
+            'Part-time Job',
+            '28/3',
+            'R2,000.00',
+          ],
+          [
+            'Cellphone',
+            'expense',
+            'Electronics',
+            '1/3',
+            'R2,000.00',
+          ],
+          [
+            'Pants',
+            'expense',
+            'Clothing',
+            '1/3',
+            'R200.00',
+          ],
+          [
+            'Shirt',
+            'expense',
+            'Clothing',
+            '10/3',
+            'R150.00',
+          ],
+          [
+            'Meat',
+            'expense',
+            'Food',
+            '15/3',
+            'R100.00',
+          ],
+          [
+            'Tax Return',
+            'income',
+            'Tax Return',
+            '15/3',
+            'R2,000.00',
+          ],
+          [
+            'Yogurt',
+            'expense',
+            'Food',
+            '18/3',
+            'R25.00',
+          ],
+          [
+            'Pie',
+            'expense',
+            'Food',
+            '18/3',
+            'R25.00',
+          ],
+          [
+            'Internet',
+            'expense',
+            'Utility',
+            '20/3',
+            'R500.00',
+          ],
+          [
+            'Water',
+            'expense',
+            'Utility',
+            '20/3',
+            'R150.00',
+          ],
+          [
+            'Rates',
+            'expense',
+            'Utility',
+            '20/3',
+            'R500.00',
+          ],
+        ],
+      },
+    ],
+  };
+}
+
+export default {
+  generateDummyData,
+};

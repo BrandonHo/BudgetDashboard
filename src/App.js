@@ -7,13 +7,11 @@ import ReactFC from 'react-fusioncharts';
 import KPICard from './components/kpi-card';
 import ChartCard from './components/chart-card';
 import Navbar from './components/navbar';
-import config from './config';
 import ChartConfigHelper from './helpers/chart-config-helper';
 import BudgetMathHelper from './helpers/budget-math-helper';
+import DummyDataHelper from './helpers/dummy-data-helper';
 
 ReactFC.fcRoot(FusionCharts, Charts);
-
-const url = `https://sheets.googleapis.com/v4/spreadsheets/${config.spreadsheetId}/values:batchGet?ranges=Budget&majorDimension=ROWS&key=${config.apiKey}`;
 
 class App extends Component {
   constructor() {
@@ -30,25 +28,21 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // Process google sheets callback for data
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        const batchRowValues = data.valueRanges[0].values;
-        const rows = [];
+    const ssID = process.env.REACT_APP_SS_ID;
+    const apiKey = process.env.REACT_APP_API_KEY;
 
-        // Get each record from the spreadsheet (note first row/headers excluded)
-        for (let i = 1; i < batchRowValues.length; i += 1) {
-          const rowObject = {};
-          for (let j = 0; j < batchRowValues[i].length; j += 1) {
-            rowObject[batchRowValues[0][j]] = batchRowValues[i][j];
-          }
-          rows.push(rowObject);
-        }
-
-        // Set records in state, then process for UI purposes
-        this.setState({ records: rows }, () => this.processDataForUI());
-      });
+    // If ID or api key not found - load dummy data
+    if ((ssID === undefined) || (apiKey === undefined)) {
+      this.processGoogleSheetData(DummyDataHelper.generateDummyData());
+    } else {
+      // Define get method url, process callback for data
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${ssID}/values:batchGet?ranges=Budget&majorDimension=ROWS&key=${apiKey}`;
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          this.processGoogleSheetData(data);
+        });
+    }
   }
 
   processDataForUI = () => {
@@ -84,6 +78,22 @@ class App extends Component {
       incomeCategoryChartData: ChartConfigHelper.bar2dConfig(incomeCategoryData, 'income'),
     });
   };
+
+  processGoogleSheetData(data) {
+    // Process data into appropriate objects
+    const batchRowValues = data.valueRanges[0].values;
+    const rows = [];
+    for (let i = 1; i < batchRowValues.length; i += 1) {
+      const rowObject = {};
+      for (let j = 0; j < batchRowValues[i].length; j += 1) {
+        rowObject[batchRowValues[0][j]] = batchRowValues[i][j];
+      }
+      rows.push(rowObject);
+    }
+
+    // Set records in state, then process for UI purposes
+    this.setState({ records: rows }, () => this.processDataForUI());
+  }
 
   render() {
     const {
