@@ -2,16 +2,14 @@ import React, { Component } from 'react';
 import './App.css';
 import '../node_modules/bulma/css/bulma.css';
 import Charts from 'fusioncharts/fusioncharts.charts';
-
 import FusionCharts from 'fusioncharts';
 import ReactFC from 'react-fusioncharts';
 import KPICard from './components/kpi-card';
-
 import ChartCard from './components/chart-card';
 import Navbar from './components/navbar';
 import config from './config';
-import ChartConfigHelper from './components/chart-config-helper';
-import BudgetMathHelper from './components/budget-math-helper';
+import ChartConfigHelper from './helpers/chart-config-helper';
+import BudgetMathHelper from './helpers/budget-math-helper';
 
 ReactFC.fcRoot(FusionCharts, Charts);
 
@@ -21,15 +19,13 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
+      records: [],
       totalIncome: 0,
       totalExpenses: 0,
       totalGross: 0,
-      records: [],
+      grossCumulativeChartData: null,
       incomeCategoryChartData: null,
-      incomeCumulativeChartData: null,
       expenseCategoryChartData: null,
-      expenseCumulativeChartData: null,
-      // grossCumulativeChartData: null,
     };
   }
 
@@ -55,10 +51,6 @@ class App extends Component {
       });
   }
 
-  testMethod = (testWord) => {
-    console.log(testWord);
-  };
-
   processDataForUI = () => {
     // Reference current records in state
     const { records } = this.state;
@@ -68,17 +60,15 @@ class App extends Component {
       records,
     );
     const itemArrays = BudgetMathHelper.getIncomeAndExpenseDataArrays(records);
+    const grossCumulativeData = BudgetMathHelper.getGrossCategoriesAndValues(
+      itemArrays.incomeItems,
+      itemArrays.expenseItems,
+    );
     const expenseCategoryData = BudgetMathHelper.getKeyValueArrayFromMap(
       BudgetMathHelper.getCategoryValueMapFromData(itemArrays.expenseItems),
     );
-    const expenseCumulativeData = BudgetMathHelper.getCumulativeTotalPerDateArray(
-      itemArrays.expenseItems,
-    );
     const incomeCategoryData = BudgetMathHelper.getKeyValueArrayFromMap(
       BudgetMathHelper.getCategoryValueMapFromData(itemArrays.incomeItems),
-    );
-    const incomeCumulativeData = BudgetMathHelper.getCumulativeTotalPerDateArray(
-      itemArrays.incomeItems,
     );
 
     // Update state with new amount variables
@@ -86,18 +76,23 @@ class App extends Component {
       totalIncome: budgetData.totalIncome,
       totalExpenses: budgetData.totalExpenses,
       totalGross: budgetData.totalGross,
-      expenseCategoryChartData: ChartConfigHelper.bar2dConfig(expenseCategoryData),
-      expenseCumulativeChartData: ChartConfigHelper.area2dConfig(expenseCumulativeData),
-      incomeCategoryChartData: ChartConfigHelper.bar2dConfig(incomeCategoryData),
-      incomeCumulativeChartData: ChartConfigHelper.area2dConfig(incomeCumulativeData),
+      grossCumulativeChartData: ChartConfigHelper.scrollArea2dConfig(
+        grossCumulativeData.categories,
+        grossCumulativeData.values,
+      ),
+      expenseCategoryChartData: ChartConfigHelper.bar2dConfig(expenseCategoryData, 'expense'),
+      incomeCategoryChartData: ChartConfigHelper.bar2dConfig(incomeCategoryData, 'income'),
     });
   };
 
   render() {
-    const { totalIncome, totalExpenses, totalGross } = this.state;
     const {
-      expenseCumulativeChartData, expenseCategoryChartData,
-      incomeCumulativeChartData, incomeCategoryChartData,
+      totalIncome,
+      totalExpenses,
+      totalGross,
+      grossCumulativeChartData,
+      expenseCategoryChartData,
+      incomeCategoryChartData,
     } = this.state;
     return (
       <div className="app has-background-grey-dark">
@@ -105,25 +100,22 @@ class App extends Component {
         <div className="container is-fullhd has-fixed-navbar-top-padding">
           <section className="section is-bottom-paddingless">
             <div className="columns">
-              <div className="column material-design-dark-card">
-                <KPICard
-                  id="test1"
-                  cardTitle="Income"
-                  value={totalIncome}
-                />
-              </div>
               <div className="column">
                 <KPICard
-                  id="test2"
                   cardTitle="Expenses"
                   value={totalExpenses}
                 />
               </div>
               <div className="column">
                 <KPICard
-                  id="test3"
                   cardTitle="Gross"
                   value={totalGross}
+                />
+              </div>
+              <div className="column">
+                <KPICard
+                  cardTitle="Income"
+                  value={totalIncome}
                 />
               </div>
             </div>
@@ -131,30 +123,21 @@ class App extends Component {
 
           <section className="section is-next-section is-bottom-paddingless">
             <div className="columns is-multiline">
-              <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
+              <div className="column is-full is-tablet is-mobile">
                 <ChartCard
-                  chartTitle="Cumulative Expenses Over Time"
-                  chartConfig={expenseCumulativeChartData}
+                  chartTitle="Gross Balance Per Date"
+                  chartConfig={grossCumulativeChartData}
                 />
               </div>
-
               <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
                 <ChartCard
-                  chartTitle="Category Overview of Expenses"
+                  chartTitle="Expense Categories"
                   chartConfig={expenseCategoryChartData}
                 />
               </div>
-
               <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
                 <ChartCard
-                  chartTitle="Cumulative Income Over Time"
-                  chartConfig={incomeCumulativeChartData}
-                />
-              </div>
-
-              <div className="column is-half-fullhd is-half-desktop is-tablet is-mobile">
-                <ChartCard
-                  chartTitle="Category Overview of Income"
+                  chartTitle="Income Categories"
                   chartConfig={incomeCategoryChartData}
                 />
               </div>

@@ -34,7 +34,6 @@ function getCategoryValueMapFromData(budgetData) {
 
 function getKeyValueArrayFromMap(dataMap) {
   const keyValueArray = [];
-
   const mapKeys = [...dataMap.keys()];
   for (let i = 0; i < mapKeys.length; i += 1) {
     keyValueArray.push({
@@ -42,6 +41,17 @@ function getKeyValueArrayFromMap(dataMap) {
       value: dataMap.get(mapKeys[i]),
     });
   }
+
+  // Sort key-value pairs according to value
+  keyValueArray.sort((a, b) => {
+    if (a.value < b.value) {
+      return 1;
+    }
+    if (b.value < a.value) {
+      return -1;
+    }
+    return 0;
+  });
 
   return keyValueArray;
 }
@@ -103,7 +113,21 @@ function getCumulativeTotalPerDateArray(budgetData) {
   let cumulativeTotal = 0;
   const totalPerDateArray = [];
 
-  const mapKeys = [...totalPerDateMap.keys()].sort();
+  const mapKeys = [...totalPerDateMap.keys()];
+  mapKeys.sort((a, b) => {
+    // Date is string with DD/MM format
+    const dayA = Number(a.split('/')[0]);
+    const dayB = Number(b.split('/')[0]);
+
+    if (dayA > dayB) {
+      return 1;
+    }
+    if (dayB > dayA) {
+      return -1;
+    }
+    return 0;
+  });
+
   for (let i = 0; i < mapKeys.length; i += 1) {
     cumulativeTotal += totalPerDateMap.get(mapKeys[i]);
     totalPerDateArray.push({
@@ -115,6 +139,66 @@ function getCumulativeTotalPerDateArray(budgetData) {
   return totalPerDateArray;
 }
 
+function getGrossCategoriesAndValues(incomeItems, expenseItems) {
+  const dateToTotalMap = new Map();
+
+  // Add income items to map
+  for (let incomeItemIndex = 0; incomeItemIndex < incomeItems.length; incomeItemIndex += 1) {
+    if (!dateToTotalMap.has(incomeItems[incomeItemIndex].date)) {
+      dateToTotalMap.set(incomeItems[incomeItemIndex].date, 0);
+    }
+    dateToTotalMap.set(
+      incomeItems[incomeItemIndex].date,
+      dateToTotalMap.get(incomeItems[incomeItemIndex].date)
+      + removeCurrencySyntax(incomeItems[incomeItemIndex].totalcost),
+    );
+  }
+
+  // Add expense items to map
+  for (let expenseItemIndex = 0; expenseItemIndex < expenseItems.length; expenseItemIndex += 1) {
+    if (!dateToTotalMap.has(expenseItems[expenseItemIndex].date)) {
+      dateToTotalMap.set(expenseItems[expenseItemIndex].date, 0);
+    }
+    dateToTotalMap.set(
+      expenseItems[expenseItemIndex].date,
+      dateToTotalMap.get(expenseItems[expenseItemIndex].date)
+      - removeCurrencySyntax(expenseItems[expenseItemIndex].totalcost),
+    );
+  }
+
+  // Sort map keys for processing
+  const mapKeys = [...dateToTotalMap.keys()];
+  mapKeys.sort((a, b) => {
+    // Date is string with DD/MM format
+    const dayA = Number(a.split('/')[0]);
+    const dayB = Number(b.split('/')[0]);
+
+    if (dayA > dayB) {
+      return 1;
+    }
+    if (dayB > dayA) {
+      return -1;
+    }
+    return 0;
+  });
+
+  // Construct array with cumulative totals from map
+  let cumulativeTotal = 0;
+  const dateCategories = [];
+  const dateValues = [];
+  for (let keyIndex = 0; keyIndex < mapKeys.length; keyIndex += 1) {
+    cumulativeTotal += dateToTotalMap.get(mapKeys[keyIndex]);
+    dateCategories.push({
+      label: mapKeys[keyIndex],
+    });
+    dateValues.push({
+      value: cumulativeTotal,
+    });
+  }
+
+  return { categories: dateCategories, values: dateValues };
+}
+
 export default {
   getCategoryValueMapFromData,
   getKeyValueArrayFromMap,
@@ -122,4 +206,5 @@ export default {
   getTotalsForIncomeExpenseAndGross,
   getCumulativeTotalPerDateArray,
   addCurrencySyntax,
+  getGrossCategoriesAndValues,
 };

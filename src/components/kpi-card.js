@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import '../../node_modules/bulma/css/bulma.css';
-import BudgetMathHelper from './budget-math-helper';
+import BudgetMathHelper from '../helpers/budget-math-helper';
 
 const KPICard = ({ cardTitle, value }) => (
   <div className="card has-background-white-ter">
-    <header className="card-header">
-      <div className="card-header-title is-mobile is-desktop" id="card-title">
+    <div className="card-content">
+      <div className="has-text-weight-medium is-size-5" id="card-title">
         {cardTitle}
       </div>
-    </header>
-    <div className="card-content">
-      <div id="card-val">{BudgetMathHelper.addCurrencySyntax(value)}</div>
+      <div className="has-text-weight-medium is-size-3" id="card-val">
+        {BudgetMathHelper.addCurrencySyntax(value)}
+      </div>
     </div>
   </div>
 );

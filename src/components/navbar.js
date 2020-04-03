@@ -14,7 +14,6 @@ const customIconButtonStyle = makeStyles(() => ({
 
 const NavBar = () => {
   const iconButtonStyle = customIconButtonStyle();
-
   return (
     <nav
       className="navbar is-spaced is-fixed-top has-background-black-ter has-text-light"
@@ -44,8 +43,6 @@ const NavBar = () => {
           </IconButton>
         </div>
       </div>
-
-
     </nav>
   );
 };
