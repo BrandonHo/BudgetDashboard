@@ -1,6 +1,6 @@
 # Budget Dashboard
 
-A dashboard which retrieves, processes, and displays budget-related data from a google spreadsheet.
+A dashboard which retrieves, processes, and displays budget-related data from a google spreadsheet. A live demonstration of the budget dashboard can be found [here](https://brandonho.github.io/BudgetDashboard/).
 
 ### Install Steps
 
