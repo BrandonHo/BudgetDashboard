@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/BudgetDashboard/static/css/main.0b8c7dcc.chunk.css",
+    "main.js": "/BudgetDashboard/static/js/main.32f00724.chunk.js",
+    "main.js.map": "/BudgetDashboard/static/js/main.32f00724.chunk.js.map",
+    "runtime-main.js": "/BudgetDashboard/static/js/runtime-main.817d87db.js",
+    "runtime-main.js.map": "/BudgetDashboard/static/js/runtime-main.817d87db.js.map",
+    "static/css/2.b9b2dd63.chunk.css": "/BudgetDashboard/static/css/2.b9b2dd63.chunk.css",
+    "static/js/2.137c6361.chunk.js": "/BudgetDashboard/static/js/2.137c6361.chunk.js",
+    "static/js/2.137c6361.chunk.js.map": "/BudgetDashboard/static/js/2.137c6361.chunk.js.map",
+    "index.html": "/BudgetDashboard/index.html",
+    "precache-manifest.2edea4f535526c10793c7329368c50a4.js": "/BudgetDashboard/precache-manifest.2edea4f535526c10793c7329368c50a4.js",
+    "service-worker.js": "/BudgetDashboard/service-worker.js",
+    "static/css/2.b9b2dd63.chunk.css.map": "/BudgetDashboard/static/css/2.b9b2dd63.chunk.css.map",
+    "static/css/main.0b8c7dcc.chunk.css.map": "/BudgetDashboard/static/css/main.0b8c7dcc.chunk.css.map",
+    "static/js/2.137c6361.chunk.js.LICENSE.txt": "/BudgetDashboard/static/js/2.137c6361.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.817d87db.js",
+    "static/css/2.b9b2dd63.chunk.css",
+    "static/js/2.137c6361.chunk.js",
+    "static/css/main.0b8c7dcc.chunk.css",
+    "static/js/main.32f00724.chunk.js"
+  ]
+}
